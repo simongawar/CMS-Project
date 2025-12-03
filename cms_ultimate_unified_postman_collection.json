@@ -1,0 +1,638 @@
+{
+    "info": {
+        "name": "CMS Ultimate Unified API Collection (V2)",
+        "description": "Updated collection focusing on Role Authentication via the public Gateway /api/auth/login endpoint, and organizing dashboard access.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "I. Auth & Token Management",
+            "item": [
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.accessToken);",
+                                    "    console.log('Access Token saved:', jsonData.accessToken);",
+                                    "}",
+                                    "if (jsonData.refreshToken) {",
+                                    "    pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                                    "    console.log('Refresh Token saved:', jsonData.refreshToken);",
+                                    "} else {",
+                                    "    console.log('Tokens not found in response');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/refresh-token",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh-token"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.accessToken);",
+                                    "    console.log('New Access Token saved:', jsonData.accessToken);",
+                                    "}",
+                                    "if (jsonData.refreshToken) {",
+                                    "    pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                                    "    console.log('Refresh Token saved:', jsonData.refreshToken);",
+                                    "} else {",
+                                    "    console.log('New Access Token not found in response');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{refresh_token}}",
+                                "type": "text",
+                                "description": "The refresh token is now passed in the Authorization header."
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/refresh-token",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh-token"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get Current User (/api/users/me)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/api/users/me",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "me"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Public Endpoint (No Auth)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{gateway_url}}/api/users/public/info",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "public",
+                                "info"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "console.log('Logout response:', jsonData);"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/logout",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "II. Role Authentication & Dashboards",
+            "item": [
+                {
+                    "name": "1. Login as ADMIN (via Gateway)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.accessToken);",
+                                    "    console.log('Access Token saved for ADMIN:', jsonData.accessToken);",
+                                    "}",
+                                    "if (jsonData.refreshToken) {",
+                                    "    pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{admin_email}}\",\n    \"password\": \"{{admin_password}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/login",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "2. Access as ADMIN Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/api/users/admin/dashboard",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "admin",
+                                "dashboard"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "3. Login as INSTRUCTOR (via Gateway)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.accessToken);",
+                                    "    console.log('Access Token saved for INSTRUCTOR:', jsonData.accessToken);",
+                                    "}",
+                                    "if (jsonData.refreshToken) {",
+                                    "    pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{instructor_email}}\",\n    \"password\": \"{{instructor_password}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/login",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "4. Access as INSTRUCTOR Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/api/users/instructor/dashboard",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "instructor",
+                                "dashboard"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "5. Login as LEARNER (via Gateway)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.accessToken) {",
+                                    "    pm.collectionVariables.set('jwt_token', jsonData.accessToken);",
+                                    "    console.log('Access Token saved for LEARNER:', jsonData.accessToken);",
+                                    "}",
+                                    "if (jsonData.refreshToken) {",
+                                    "    pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{learner_email}}\",\n    \"password\": \"{{learner_password}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{gateway_url}}/api/auth/login",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "6. Access as LEARNER Dashboard",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/api/users/learner/dashboard",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "learner",
+                                "dashboard"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "III. Microservice CRUD via API Gateway",
+            "item": [
+                {
+                    "name": "User Service",
+                    "item": [
+                        {
+                            "name": "Register User",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{gateway_url}}/user-service/api/users/register",
+                                    "host": [
+                                        "{{gateway_url}}"
+                                    ],
+                                    "path": [
+                                        "user-service",
+                                        "api",
+                                        "users",
+                                        "register"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"username\": \"newuser\", \"email\": \"newuser@example.com\", \"password\": \"password123\", \"role\": \"LEARNER\"}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "Get User by ID",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{gateway_url}}/user-service/api/users/{{id}}",
+                                    "host": [
+                                        "{{gateway_url}}"
+                                    ],
+                                    "path": [
+                                        "user-service",
+                                        "api",
+                                        "users",
+                                        "{{id}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Course Service",
+                    "item": [
+                        {
+                            "name": "List Courses",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{gateway_url}}/course-service/api/courses",
+                                    "protocol": "http",
+                                    "host": [
+                                        "{{gateway_url}}"
+                                    ],
+                                    "path": [
+                                        "course-service",
+                                        "api",
+                                        "courses"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Userassessment Service",
+                    "item": [
+                        {
+                            "name": "List assessments (Gateway)",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{gateway_url}}/userassessment-service/api/assessments",
+                                    "host": [
+                                        "{{gateway_url}}"
+                                    ],
+                                    "path": [
+                                        "userassessment-service",
+                                        "api",
+                                        "assessments"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "Create assessment (Gateway)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    },
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{jwt_token}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{gateway_url}}/userassessment-service/api/assessments",
+                                    "host": [
+                                        "{{gateway_url}}"
+                                    ],
+                                    "path": [
+                                        "userassessment-service",
+                                        "api",
+                                        "assessments"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\"name\": \"Sample assessment via Gateway\", \"description\": \"Sample description\"}"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "IV. Other Services & Infrastructure",
+            "item": [
+                {
+                    "name": "Notification Service Health",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/notification-service/actuator/health",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "notification-service",
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Analytics Service Report",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{gateway_url}}/analytics-service/api/analytics/report",
+                            "protocol": "http",
+                            "host": [
+                                "{{gateway_url}}"
+                            ],
+                            "path": [
+                                "analytics-service",
+                                "api",
+                                "analytics",
+                                "report"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Eureka Server Dashboard (Direct)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:8761",
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "8761"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
