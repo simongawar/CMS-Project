@@ -84,56 +84,26 @@ Look for the standard Spring Boot startup message indicating that the service is
 4.Service Access and Testing (from Localhost)
 Each service runs on a unique port on your host machine, as defined in the docker-compose.yml file (e.g., 8081:8080).
 
+
+
+## Service Connectivity and Sample URLs
 You can test connectivity to each service using the specified localhost port:
 
-Service Name
+| Service Name         | Host Port | Sample Access URL (Base)                      |
+|----------------------|-----------|-----------------------------------------------|
+| auth-service         | 8081      | http://localhost:8081/api/auth               |
+| user-service         | 8082      | http://localhost:8082/api/users              |
+| course-service       | 8083      | http://localhost:8083/api/courses            |
+| assessment-service   | 8084      | http://localhost:8084/api/assessments        |
+| notification-service | 8085      | http://localhost:8085/api/notifications      |
+| analytics-service    | 8086      | http://localhost:8086/api/analytics          |
+| cloak-resource-server| 8087      | http://localhost:8087                        |
+| eureka-server        | 8761      | http://localhost:8761                        |
+| config-server        | 8071      | http://localhost:8071                        |
+| api-gateway          | 9090      | http://localhost:9090                        |
 
-Host Port
-
-Database Container
-
-Sample Access URL (Base)
-
-user-service
-
-8081
-
-user-db
-
-<http://localhost:8081/api/users>
-
-course-service
-
-8082
-
-course-db
-
-<http://localhost:8082/api/courses>
-
-assessment-service
-
-8083
-
-assessment-db
-
-<http://localhost:8083/api/assessments>
-
-notification-service
-
-8084
-
-notification-db
-
-<http://localhost:8084/api/notifications>
-
-analytics-service
-
-8085
-
-analytics-db
-
-<http://localhost:8085/api/analytics>
-
+### Shared Module
+- **common_security**: Shared module for Keycloak integration across services.
 Database Access (Optional)
 When we need to connect to the databases directly (like MySQL Workbench used here ), use the following credentials.
 
