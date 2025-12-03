@@ -1,0 +1,167 @@
+services:
+  eureka-server:
+    build:
+      context: ..
+      dockerfile: eureka_server/eureka_server/Dockerfile
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: api_gateway/api_gateway/Dockerfile
+    ports:
+      - "9090:9090"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      # Gateway route patterns
+      - GATEWAY_ROUTES_USERSERVICE=/user-service/**
+      - GATEWAY_ROUTES_AUTHSERVICE=/auth-service/**
+      - GATEWAY_ROUTES_COURSESERVICE=/course-service/**
+      - GATEWAY_ROUTES_NOTIFICATION=/notification-service/**
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  auth-service:
+    build:
+      context: ..
+      dockerfile: auth_service/auth_service/Dockerfile
+    ports:
+      - "${AUTH_SERVICE_PORT}:8081"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  user-service:
+    build:
+      context: ..
+      dockerfile: user_service/user_service/Dockerfile
+    ports:
+      - "${USER_SERVICE_PORT}:8082"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8082
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  course-service:
+    build:
+      context: ..
+      dockerfile: course_service/course_service/Dockerfile
+    ports:
+      - "${COURSE_SERVICE_PORT}:8083"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8083
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  userassessment-service:
+    build:
+      context: ..
+      dockerfile: userassessment_service/userassessment_service/Dockerfile
+    ports:
+      - "${USERASSESSMENT_SERVICE_PORT}:8084"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8084
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: notification_service/notification_service/Dockerfile
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:8085"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8085
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
+
+  analytics-service:
+    build:
+      context: ..
+      dockerfile: analytics_service/analytics_service/Dockerfile
+    ports:
+      - "${ANALYTICS_SERVICE_PORT}:8086"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_URL}
+      - SERVER_PORT=8086
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ~/.m2:/root/.m2
