@@ -1,0 +1,28 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active:
+      - git
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/simongawar/CMS-Project.git
+          # ⭐ RECOMMENDED ADDITION: Specify the search path within the Git repository
+          # This tells the server to look inside the 'config' folder
+          search-paths: 'config' 
+          # Alternatively, use '{application}' if each app has its own folder (e.g. repo/cms-service/...)
+          # search-paths: '{application}'
+
+encrypt:
+  key: ${ENCRYPT_KEY} 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
